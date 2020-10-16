@@ -1,7 +1,10 @@
 .git/*
+.gitconfig
 env/
 venv/
+.venv
 .venv/
+.env
 
 __pycache__/
 *.py[cod]
@@ -10,11 +13,25 @@ __pycache__/
 .DS_Store
 .AppleDouble
 .LSOverride
-.vscode
 
 *.sublime-project
 *.sublime-workspace
 
+static/
+posts/static/
 media/
 
 db.sqlite3
+db*journal
+
+.idea — копия/
+sent_emails/
+.flake8
+.run/
+.vscode/
+settings.json
+.pylintrc
+/db.json
+/.env
+*.log
+tox.ini
