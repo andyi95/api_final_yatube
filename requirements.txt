@@ -4,3 +4,7 @@ pytest
 pytest-django
 djangorestframework
 djangorestframework-simplejwt
+flake8
+flake8-builtins
+flake8-multiline-containers
+flake8-quotes

@@ -35,3 +35,4 @@ settings.json
 /.env
 *.log
 tox.ini
+requirements.txt

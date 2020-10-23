@@ -3,13 +3,13 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Group(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
-    description = models.TextField()
 
     def __str__(self):
         return self.title
+
 
 class Post(models.Model):
     text = models.TextField()
@@ -22,15 +22,12 @@ class Post(models.Model):
     group = models.ForeignKey(
         Group,
         on_delete=models.SET_NULL,
-        related_name='posts',
+        related_name='group',
         blank=True, null=True,
     )
-    image = models.ImageField(upload_to='posts/', null=True, blank=True)
 
     def __str__(self):
         return self.text[:40]
-
-
 
 
 class Comment(models.Model):
@@ -52,6 +49,7 @@ class Comment(models.Model):
         db_index=True
     )
 
+
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
@@ -59,7 +57,7 @@ class Follow(models.Model):
         related_name='follower',
         verbose_name='Подписчик'
     )
-    author = models.ForeignKey(
+    following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',
@@ -67,4 +65,4 @@ class Follow(models.Model):
     )
 
     class Meta:
-        unique_together = ['user', 'author']
+        unique_together = ('user', 'following')
