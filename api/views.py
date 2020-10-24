@@ -1,21 +1,27 @@
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.filters import SearchFilter
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.permissions import IsOwnerOrReadOnly
 from api.serializers import (CommentSerializer, FollowSerializer,
                              GroupSerializer, PostSerializer)
 
-from .models import Follow, Group, Post
+from api.models import Follow, Group, Post
+
+
+class GetPostViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+                     mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Заготовка вьюсета для Get/Post запросов
+    """
+    pass
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group', ]
 
     serializer = PostSerializer(queryset, many=True)
@@ -24,16 +30,14 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class GroupViewSet(viewsets.ViewSetMixin, generics.ListCreateAPIView):
+class GroupViewSet(GetPostViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 
-class FollowList(viewsets.ViewSetMixin, generics.ListCreateAPIView):
+class FollowList(GetPostViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [SearchFilter]
     search_fields = ['=user__username', '=following__username']
 
@@ -52,14 +56,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         post = get_object_or_404(Post, pk=self.kwargs.get('post_id'))
-        serializer.save(
-            author=self.request.user,
-            post_id=post.pk
-        )
+        serializer.save(author=self.request.user, post=post)
 
     def perform_update(self, serializer):
         post = get_object_or_404(Post, pk=self.kwargs.get('post_id'))
-        serializer.save(
-            author=self.request.user,
-            post_id=post.pk
-        )
+        serializer.save(author=self.request.user, post=post)

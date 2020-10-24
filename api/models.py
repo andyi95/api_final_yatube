@@ -8,7 +8,7 @@ class Group(models.Model):
     title = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.title
+        return self.title[:40]
 
 
 class Post(models.Model):
@@ -48,6 +48,9 @@ class Comment(models.Model):
         auto_now_add=True,
         db_index=True
     )
+
+    def __str__(self):
+        return self.text[:40]
 
 
 class Follow(models.Model):
