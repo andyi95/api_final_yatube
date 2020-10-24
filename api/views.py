@@ -10,10 +10,11 @@ from api.serializers import (CommentSerializer, FollowSerializer,
 from api.models import Follow, Group, Post
 
 
-class GetPostViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-                     mixins.ListModelMixin, viewsets.GenericViewSet):
+class GetPostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
+                     viewsets.GenericViewSet):
     """
-    Заготовка вьюсета для Get/Post запросов
+    Заготовка вьюсета для Get/Post запросов - применяем миксины согласно
+    документации redoc
     """
     pass
 
